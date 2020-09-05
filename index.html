@@ -64,15 +64,76 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-python 操作excel" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Mysql 查询分组 查询top n" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/" class="article-date">
-  <time datetime="2020-09-05T08:39:05.840Z" itemprop="datePublished">2020-09-05</time>
+    <a href="/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/" class="article-date">
+  <time datetime="2020-09-05T08:38:20.044Z" itemprop="datePublished">2020-09-05</time>
 </a>
     
   </div>
   <div class="article-inner">
     
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id=""><a href="#" class="headerlink" title=""></a></h1><hr>
+<p>title: Mysql 查询分组 查询top n<br>date: 2020-09-05 16:14:56<br>tags:</p>
+<hr>
+<h1 id="情况说明"><a href="#情况说明" class="headerlink" title="情况说明"></a>情况说明</h1><p>查询每门科目的前3名。</p>
+<p>对于查询的结果，一般有两种情况。</p>
+<p>表所有数据为：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/20200830204926.png" alt="image-20200830171608567"></p>
+<p>情况1：对于分数相同的人，其后面的人 紧跟着名次排，直到排够名次3，就不再往后取了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200830170431328.png" alt="image-20200830170431328"></p>
+<p>情况2：对于分数相同的人，若当前相同名次的人数大于或等于 3， 则相同分数其后面的人不再参于top3了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200830170939339.png" alt="image-20200830170939339"></p>
+<p><strong>在情况2中 ，为什么”李四 - java“ 这行没有了呢？</strong></p>
+<p>可以这样理解，在情况2中相当于使用了<strong>名次空缺</strong>， 分数相同的人其后面那个人，的名次为 <strong>前面的人数+1</strong> ， 这里的 ”李四-java“这行，他的名次应当是 <strong>5</strong> ， 所有top3自然取不到  ”李四-java“这行。</p>
+<h1 id="查询方法"><a href="#查询方法" class="headerlink" title="# 查询方法"></a># 查询方法</h1><h2 id="情况1方法："><a href="#情况1方法：" class="headerlink" title="情况1方法："></a>情况1方法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"># 方法1</span><br><span class="line">SELECT 		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">WHERE		(SELECT COUNT(distinct score) FROM score_t WHERE T1.subject &#x3D; subject AND T1.score &lt; score) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line">-- 思路：</span><br><span class="line">-- 1. 通过子查询的方式 ， 查询每条记录中 对应科目比他分数高的 </span><br><span class="line">-- 2. 如果比自己还高的 小于3 ，那么自己就是属于top3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法2</span><br><span class="line"> SELECT		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">LEFT JOIN	(SELECT DISTINCT subject, score FROM score_t) T2</span><br><span class="line">ON 			T1.subject &#x3D; T2.subject</span><br><span class="line">AND 		T1.score &lt; T2.score</span><br><span class="line">GROUP BY 	name,subject,score</span><br><span class="line">HAVING		COUNT(1) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line"></span><br><span class="line">-- 思路：</span><br><span class="line">-- 1. 找到所有科目对应分数的所有情况 （去重）</span><br><span class="line">-- 2. 和原表关联后， 且比当前 记录 对应科目比自己分数</span><br><span class="line">-- 3. 分组后 找出 次数小于3的</span><br><span class="line">-- 注意： 使用 distinct 去重 和不使用， 区别于并列名次 是否算同一个名额</span><br><span class="line"></span><br><span class="line"># 方法3</span><br><span class="line">select t.name,t.subject,t.score,t.rank from (</span><br><span class="line">	select name,subject,score,</span><br><span class="line">	@r:&#x3D; if(@psub &#x3D; subject, if(@psco &#x3D; score, @r, @r + 1), 1) rank ,</span><br><span class="line">	@psub:&#x3D; subject , @psco:&#x3D; score </span><br><span class="line">	from score_t, (select @psub:&#x3D;null, @psco:&#x3D;null, @r:&#x3D;0) init</span><br><span class="line">	order by subject,score desc</span><br><span class="line">) t where t.rank &lt;&#x3D;3;</span><br><span class="line">-- 思路：</span><br><span class="line">-- 使用 临时变量， 相同的分数 保持名次不变，否则+1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法4</span><br><span class="line">select t1.name,t1.subject,t1.score, count(distinct t2.score)  rank from score_t t1 -- </span><br><span class="line">left join score_t t2</span><br><span class="line">on t1.subject &#x3D; t2.subject and t2.score &gt;&#x3D; t1.score</span><br><span class="line">group by t1.subject,t1.name,t1.score</span><br><span class="line">having count(distinct t2.score) &lt;&#x3D; 3</span><br><span class="line">order by subject,score desc ,rank;</span><br><span class="line">-- 和方法2思路一样 ， 只是使用 写法不同</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="情况2方法："><a href="#情况2方法：" class="headerlink" title="情况2方法："></a>情况2方法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"># 方法1：  </span><br><span class="line">SELECT 		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">WHERE		(SELECT COUNT(1) FROM score_t WHERE T1.subject &#x3D; subject AND T1.score &lt; score) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"># 方法2    </span><br><span class="line"> SELECT		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">LEFT JOIN	(SELECT subject, score FROM score_t) T2</span><br><span class="line">ON 			T1.subject &#x3D; T2.subject</span><br><span class="line">AND 		T1.score &lt; T2.score</span><br><span class="line"></span><br><span class="line">GROUP BY 	name,subject,score</span><br><span class="line">HAVING		COUNT(1) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法3</span><br><span class="line">select t.name,t.subject,t.score,t.rank from (</span><br><span class="line">	select name,subject,score,</span><br><span class="line">	@allorder:&#x3D; if(@psub &#x3D; subject, @allorder + 1, 1),</span><br><span class="line">	@r:&#x3D; if(@psub &#x3D; subject, if(@psco &#x3D; score, @r, @allorder), 1) rank ,	</span><br><span class="line">	@psub:&#x3D; subject , @psco:&#x3D; score</span><br><span class="line">	from score_t, (select @psub:&#x3D;null, @psco:&#x3D;null, @r:&#x3D;0, @allorder:&#x3D;0) init</span><br><span class="line">	order by subject,score desc</span><br><span class="line">) t where t.rank &lt;&#x3D;3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法4</span><br><span class="line">select t1.name,t1.subject,t1.score  from score_t t1 -- </span><br><span class="line">left join score_t t2</span><br><span class="line">on t1.subject &#x3D; t2.subject and t2.score &gt; t1.score</span><br><span class="line">group by t1.subject,t1.name,t1.score</span><br><span class="line">having count(*) &lt;  3</span><br><span class="line">order by subject,score desc </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>情况2和情况 写法都是对应的， 需要注意的是 并列名次，后面的人 是否需要保持名次空缺。那么统计的时候就需要根据情况去重。</p>
+<h1 id="数据创建"><a href="#数据创建" class="headerlink" title="数据创建"></a>数据创建</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE score_t(</span><br><span class="line">name 		VARCHAR(10),</span><br><span class="line">subject		VARCHAR(10),</span><br><span class="line">score		INT(10)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO score_t VALUES</span><br><span class="line">(&quot;张三&quot;,&quot;java&quot;,71),</span><br><span class="line">(&quot;李四&quot;,&quot;java&quot;,82),</span><br><span class="line">(&quot;王五&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;赵六&quot;,&quot;java&quot;,98),</span><br><span class="line">(&quot;孙七&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;陈八&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;张三&quot;,&quot;python&quot;,81),</span><br><span class="line">(&quot;李四&quot;,&quot;python&quot;,92),</span><br><span class="line">(&quot;王五&quot;,&quot;python&quot;,93),</span><br><span class="line">(&quot;赵六&quot;,&quot;python&quot;,97),</span><br><span class="line">(&quot;刘九&quot;,&quot;python&quot;,93),</span><br><span class="line">(&quot;孙七&quot;,&quot;python&quot;,70);</span><br></pre></td></tr></table></figure>
+
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44497013/article/details/107317719">https://blog.csdn.net/weixin_44497013/article/details/107317719</a></p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/department-top-three-salaries/solution/mysqlzi-ding-yi-bian-liang-shi-xian-fen-lei-pai-xu/">https://leetcode-cn.com/problems/department-top-three-salaries/solution/mysqlzi-ding-yi-bian-liang-shi-xian-fen-lei-pai-xu/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://winter60.github.io/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/" data-id="ckepf1q6r0000o0ln23n99meq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python 操作excel" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/" class="article-date">
+  <time datetime="2020-09-05T08:14:56.000Z" itemprop="datePublished">2020-09-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/">python 操作excel</a>
+    </h1>
+  
+
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -121,15 +182,96 @@
 
 
   
-    <article id="post-python 爬虫（二）- 解析库 的简单使用" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Windows 下安装解压版mysql 及环境配置" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" class="article-date">
-  <time datetime="2020-09-05T08:39:05.768Z" itemprop="datePublished">2020-09-05</time>
+    <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" class="article-date">
+  <time datetime="2020-09-05T08:14:56.000Z" itemprop="datePublished">2020-09-05</time>
 </a>
     
   </div>
   <div class="article-inner">
     
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Windows 下安装解压版mysql 及环境配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文将介绍如何在windows下安装配置mysql</p>
+</blockquote>
+<ol>
+<li>下载安装包</li>
+<li>配置ini文件并初始化</li>
+<li>创建mysql服务，启动关闭服务</li>
+<li>设置密码</li>
+<li>创建数据库</li>
+</ol>
+<h1 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h1><p>去官网下载社区版的版本，<a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/mysql/">https://dev.mysql.com/downloads/mysql/</a></p>
+<p>我这里使用的是5.7版本， 5.8有一些新的特性和用法，根据需要进行安装。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075343736.png" alt="image-20200905075343736"></p>
+<p>选择对应的版本</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075518656.png" alt="image-20200905075518656"></p>
+<p>下载到本地解压。</p>
+<h1 id="配置ini文件并初始化"><a href="#配置ini文件并初始化" class="headerlink" title="配置ini文件并初始化"></a>配置ini文件并初始化</h1><p>解压后在目录下新建my.ini文件，内容如下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905080426957.png" alt="image-20200905080426957"></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysql]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">3306</span> </span><br><span class="line"><span class="attr">basedir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\</span><br><span class="line"><span class="attr">datadir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\data </span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">200</span> </span><br><span class="line"><span class="attr">character-set-server</span>=utf8 </span><br><span class="line"><span class="attr">default-storage-engine</span>=INNODB</span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span>=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>basedir 和datadir 配置成自己对应的目录</strong>，其中，需要在当前目录新建一个 名为data的空文件夹</p>
+<p>接下来以进入 bin目录，打开管理员命令行窗口， 输入命令<code>mysqld --initialize-insecure --user=mysql</code> 初始化，</p>
+<p>接着 <code>mysqld install</code> 命令安装服务，</p>
+<p>这样就可以 使用 <code>net start mysql</code> 和 <code>net stop mysql</code> 来启动和关闭mysql服务了。</p>
+<h1 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h1><p>在命令行窗口 使用<code>mysql -u root -p</code>就可以进入mysql了， 默认没有密码。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;<span class="built_in">set</span> password =password(<span class="string">&#x27;123&#x27;</span>);</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
+
+<p>下次打开的就需要输出密码了</p>
+<h1 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h1><p>在命令行输入 <code>show databases</code>可以看到当前用户有哪些数据库</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083117581.png" alt="image-20200905083117581"></p>
+<p>输入<code>create database 自己的库名 default charset=utf8mb4 </code>就可以创建 数据库了， 此时再<code>show databases</code>就可以看到多了一个数据库。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083900015.png" alt="image-20200905083900015"></p>
+<p>使用<code>use 库名</code> 就可以在当前 进行 表的增删查改了。</p>
+<p>另外，删除库的命令是<code>drop database 库名</code></p>
+<p>本文不对表相关查询 进行展开。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://winter60.github.io/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" data-id="ckepf1q780002o0lnb5ua4ijv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python 爬虫（二）- 解析库 的简单使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time datetime="2020-09-05T08:14:56.000Z" itemprop="datePublished">2020-09-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">python 爬虫（二）- 解析库 的简单使用</a>
+    </h1>
+  
+
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -256,115 +398,6 @@
 
 
   
-    <article id="post-Windows 下安装解压版mysql 及环境配置" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" class="article-date">
-  <time datetime="2020-09-05T08:38:20.125Z" itemprop="datePublished">2020-09-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本文将介绍如何在windows下安装配置mysql</p>
-</blockquote>
-<ol>
-<li>下载安装包</li>
-<li>配置ini文件并初始化</li>
-<li>创建mysql服务，启动关闭服务</li>
-<li>设置密码</li>
-<li>创建数据库</li>
-</ol>
-<h1 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h1><p>去官网下载社区版的版本，<a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/mysql/">https://dev.mysql.com/downloads/mysql/</a></p>
-<p>我这里使用的是5.7版本， 5.8有一些新的特性和用法，根据需要进行安装。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075343736.png" alt="image-20200905075343736"></p>
-<p>选择对应的版本</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075518656.png" alt="image-20200905075518656"></p>
-<p>下载到本地解压。</p>
-<h1 id="配置ini文件并初始化"><a href="#配置ini文件并初始化" class="headerlink" title="配置ini文件并初始化"></a>配置ini文件并初始化</h1><p>解压后在目录下新建my.ini文件，内容如下</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905080426957.png" alt="image-20200905080426957"></p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysql]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">3306</span> </span><br><span class="line"><span class="attr">basedir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\</span><br><span class="line"><span class="attr">datadir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\data </span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">200</span> </span><br><span class="line"><span class="attr">character-set-server</span>=utf8 </span><br><span class="line"><span class="attr">default-storage-engine</span>=INNODB</span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span>=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>basedir 和datadir 配置成自己对应的目录</strong>，其中，需要在当前目录新建一个 名为data的空文件夹</p>
-<p>接下来以进入 bin目录，打开管理员命令行窗口， 输入命令<code>mysqld --initialize-insecure --user=mysql</code> 初始化，</p>
-<p>接着 <code>mysqld install</code> 命令安装服务，</p>
-<p>这样就可以 使用 <code>net start mysql</code> 和 <code>net stop mysql</code> 来启动和关闭mysql服务了。</p>
-<h1 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h1><p>在命令行窗口 使用<code>mysql -u root -p</code>就可以进入mysql了， 默认没有密码。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;<span class="built_in">set</span> password =password(<span class="string">&#x27;123&#x27;</span>);</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
-
-<p>下次打开的就需要输出密码了</p>
-<h1 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h1><p>在命令行输入 <code>show databases</code>可以看到当前用户有哪些数据库</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083117581.png" alt="image-20200905083117581"></p>
-<p>输入<code>create database 自己的库名 default charset=utf8mb4 </code>就可以创建 数据库了， 此时再<code>show databases</code>就可以看到多了一个数据库。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083900015.png" alt="image-20200905083900015"></p>
-<p>使用<code>use 库名</code> 就可以在当前 进行 表的增删查改了。</p>
-<p>另外，删除库的命令是<code>drop database 库名</code></p>
-<p>本文不对表相关查询 进行展开。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://winter60.github.io/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" data-id="ckepf1q780002o0lnb5ua4ijv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Mysql 查询分组 查询top n" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/" class="article-date">
-  <time datetime="2020-09-05T08:38:20.044Z" itemprop="datePublished">2020-09-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id=""><a href="#" class="headerlink" title=""></a></h1><h1 id="情况说明"><a href="#情况说明" class="headerlink" title="情况说明"></a>情况说明</h1><p>查询每门科目的前3名。</p>
-<p>对于查询的结果，一般有两种情况。</p>
-<p>表所有数据为：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/20200830204926.png" alt="image-20200830171608567"></p>
-<p>情况1：对于分数相同的人，其后面的人 紧跟着名次排，直到排够名次3，就不再往后取了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200830170431328.png" alt="image-20200830170431328"></p>
-<p>情况2：对于分数相同的人，若当前相同名次的人数大于或等于 3， 则相同分数其后面的人不再参于top3了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200830170939339.png" alt="image-20200830170939339"></p>
-<p><strong>在情况2中 ，为什么”李四 - java“ 这行没有了呢？</strong></p>
-<p>可以这样理解，在情况2中相当于使用了<strong>名次空缺</strong>， 分数相同的人其后面那个人，的名次为 <strong>前面的人数+1</strong> ， 这里的 ”李四-java“这行，他的名次应当是 <strong>5</strong> ， 所有top3自然取不到  ”李四-java“这行。</p>
-<h1 id="查询方法"><a href="#查询方法" class="headerlink" title="# 查询方法"></a># 查询方法</h1><h2 id="情况1方法："><a href="#情况1方法：" class="headerlink" title="情况1方法："></a>情况1方法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"># 方法1</span><br><span class="line">SELECT 		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">WHERE		(SELECT COUNT(distinct score) FROM score_t WHERE T1.subject &#x3D; subject AND T1.score &lt; score) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line">-- 思路：</span><br><span class="line">-- 1. 通过子查询的方式 ， 查询每条记录中 对应科目比他分数高的 </span><br><span class="line">-- 2. 如果比自己还高的 小于3 ，那么自己就是属于top3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法2</span><br><span class="line"> SELECT		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">LEFT JOIN	(SELECT DISTINCT subject, score FROM score_t) T2</span><br><span class="line">ON 			T1.subject &#x3D; T2.subject</span><br><span class="line">AND 		T1.score &lt; T2.score</span><br><span class="line">GROUP BY 	name,subject,score</span><br><span class="line">HAVING		COUNT(1) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line"></span><br><span class="line">-- 思路：</span><br><span class="line">-- 1. 找到所有科目对应分数的所有情况 （去重）</span><br><span class="line">-- 2. 和原表关联后， 且比当前 记录 对应科目比自己分数</span><br><span class="line">-- 3. 分组后 找出 次数小于3的</span><br><span class="line">-- 注意： 使用 distinct 去重 和不使用， 区别于并列名次 是否算同一个名额</span><br><span class="line"></span><br><span class="line"># 方法3</span><br><span class="line">select t.name,t.subject,t.score,t.rank from (</span><br><span class="line">	select name,subject,score,</span><br><span class="line">	@r:&#x3D; if(@psub &#x3D; subject, if(@psco &#x3D; score, @r, @r + 1), 1) rank ,</span><br><span class="line">	@psub:&#x3D; subject , @psco:&#x3D; score </span><br><span class="line">	from score_t, (select @psub:&#x3D;null, @psco:&#x3D;null, @r:&#x3D;0) init</span><br><span class="line">	order by subject,score desc</span><br><span class="line">) t where t.rank &lt;&#x3D;3;</span><br><span class="line">-- 思路：</span><br><span class="line">-- 使用 临时变量， 相同的分数 保持名次不变，否则+1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法4</span><br><span class="line">select t1.name,t1.subject,t1.score, count(distinct t2.score)  rank from score_t t1 -- </span><br><span class="line">left join score_t t2</span><br><span class="line">on t1.subject &#x3D; t2.subject and t2.score &gt;&#x3D; t1.score</span><br><span class="line">group by t1.subject,t1.name,t1.score</span><br><span class="line">having count(distinct t2.score) &lt;&#x3D; 3</span><br><span class="line">order by subject,score desc ,rank;</span><br><span class="line">-- 和方法2思路一样 ， 只是使用 写法不同</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="情况2方法："><a href="#情况2方法：" class="headerlink" title="情况2方法："></a>情况2方法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"># 方法1：  </span><br><span class="line">SELECT 		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">WHERE		(SELECT COUNT(1) FROM score_t WHERE T1.subject &#x3D; subject AND T1.score &lt; score) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"># 方法2    </span><br><span class="line"> SELECT		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">LEFT JOIN	(SELECT subject, score FROM score_t) T2</span><br><span class="line">ON 			T1.subject &#x3D; T2.subject</span><br><span class="line">AND 		T1.score &lt; T2.score</span><br><span class="line"></span><br><span class="line">GROUP BY 	name,subject,score</span><br><span class="line">HAVING		COUNT(1) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法3</span><br><span class="line">select t.name,t.subject,t.score,t.rank from (</span><br><span class="line">	select name,subject,score,</span><br><span class="line">	@allorder:&#x3D; if(@psub &#x3D; subject, @allorder + 1, 1),</span><br><span class="line">	@r:&#x3D; if(@psub &#x3D; subject, if(@psco &#x3D; score, @r, @allorder), 1) rank ,	</span><br><span class="line">	@psub:&#x3D; subject , @psco:&#x3D; score</span><br><span class="line">	from score_t, (select @psub:&#x3D;null, @psco:&#x3D;null, @r:&#x3D;0, @allorder:&#x3D;0) init</span><br><span class="line">	order by subject,score desc</span><br><span class="line">) t where t.rank &lt;&#x3D;3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法4</span><br><span class="line">select t1.name,t1.subject,t1.score  from score_t t1 -- </span><br><span class="line">left join score_t t2</span><br><span class="line">on t1.subject &#x3D; t2.subject and t2.score &gt; t1.score</span><br><span class="line">group by t1.subject,t1.name,t1.score</span><br><span class="line">having count(*) &lt;  3</span><br><span class="line">order by subject,score desc </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>情况2和情况 写法都是对应的， 需要注意的是 并列名次，后面的人 是否需要保持名次空缺。那么统计的时候就需要根据情况去重。</p>
-<h1 id="数据创建"><a href="#数据创建" class="headerlink" title="数据创建"></a>数据创建</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE score_t(</span><br><span class="line">name 		VARCHAR(10),</span><br><span class="line">subject		VARCHAR(10),</span><br><span class="line">score		INT(10)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO score_t VALUES</span><br><span class="line">(&quot;张三&quot;,&quot;java&quot;,71),</span><br><span class="line">(&quot;李四&quot;,&quot;java&quot;,82),</span><br><span class="line">(&quot;王五&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;赵六&quot;,&quot;java&quot;,98),</span><br><span class="line">(&quot;孙七&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;陈八&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;张三&quot;,&quot;python&quot;,81),</span><br><span class="line">(&quot;李四&quot;,&quot;python&quot;,92),</span><br><span class="line">(&quot;王五&quot;,&quot;python&quot;,93),</span><br><span class="line">(&quot;赵六&quot;,&quot;python&quot;,97),</span><br><span class="line">(&quot;刘九&quot;,&quot;python&quot;,93),</span><br><span class="line">(&quot;孙七&quot;,&quot;python&quot;,70);</span><br></pre></td></tr></table></figure>
-
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44497013/article/details/107317719">https://blog.csdn.net/weixin_44497013/article/details/107317719</a></p>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/department-top-three-salaries/solution/mysqlzi-ding-yi-bian-liang-shi-xian-fen-lei-pai-xu/">https://leetcode-cn.com/problems/department-top-three-salaries/solution/mysqlzi-ding-yi-bian-liang-shi-xian-fen-lei-pai-xu/</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://winter60.github.io/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/" data-id="ckepf1q6r0000o0ln23n99meq" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
 </section>
@@ -396,19 +429,19 @@
       <ul>
         
           <li>
-            <a href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">(no title)</a>
-          </li>
-        
-          <li>
             <a href="/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/">python 操作excel</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Windows 下安装解压版mysql 及环境配置</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">python 爬虫（二）- 解析库 的简单使用</a>
           </li>
         
       </ul>
