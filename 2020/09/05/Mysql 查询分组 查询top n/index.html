@@ -5,13 +5,13 @@
   
 
   
-  <title>Mysql 查询分组 查询top n | Hexo</title>
+  <title>Mysql 查询分组 查询top n | 烟火小站</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="情况说明查询每门科目的前3名。 对于查询的结果，一般有两种情况。 表所有数据为：  情况1：对于分数相同的人，其后面的人 紧跟着名次排，直到排够名次3，就不再往后取了。  情况2：对于分数相同的人，若当前相同名次的人数大于或等于 3， 则相同分数其后面的人不再参于top3了。  在情况2中 ，为什么”李四 - java“ 这行没有了呢？ 可以这样理解，在情况2中相当于使用了名次空缺， 分数相同的人">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql 查询分组 查询top n">
 <meta property="og:url" content="https://winter60.github.io/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="烟火小站">
 <meta property="og:description" content="情况说明查询每门科目的前3名。 对于查询的结果，一般有两种情况。 表所有数据为：  情况1：对于分数相同的人，其后面的人 紧跟着名次排，直到排够名次3，就不再往后取了。  情况2：对于分数相同的人，若当前相同名次的人数大于或等于 3， 则相同分数其后面的人不再参于top3了。  在情况2中 ，为什么”李四 - java“ 这行没有了呢？ 可以这样理解，在情况2中相当于使用了名次空缺， 分数相同的人">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/20200830204926.png">
@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/20200830204926.png">
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="烟火小站" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -44,7 +44,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">烟火小站</a>
       </h1>
       
     </div>
