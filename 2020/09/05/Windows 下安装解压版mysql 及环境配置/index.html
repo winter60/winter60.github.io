@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文将介绍如何在windows下安装配置mysql   下载安装包 配置ini文件并初始化 创建mysql服务，启动关闭服务 设置密码 创建数据库  下载安装包去官网下载社区版的版本，https:&#x2F;&#x2F;dev.mysql.com&#x2F;downloads&#x2F;mysql&#x2F; 我这里使用的是5.7版本， 5.8有一些新的特性和用法，根据需要进行安装。  选择对应的版本  下载到本地解压。 配置ini文件并初始化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="https://winter60.github.io/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本文将介绍如何在windows下安装配置mysql   下载安装包 配置ini文件并初始化 创建mysql服务，启动关闭服务 设置密码 创建数据库  下载安装包去官网下载社区版的版本，https:&#x2F;&#x2F;dev.mysql.com&#x2F;downloads&#x2F;mysql&#x2F; 我这里使用的是5.7版本， 5.8有一些新的特性和用法，根据需要进行安装。  选择对应的版本  下载到本地解压。 配置ini文件并初始化">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075343736.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075518656.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905080426957.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083117581.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083900015.png">
+<meta property="article:published_time" content="2020-09-05T08:38:20.125Z">
+<meta property="article:modified_time" content="2020-09-05T00:46:56.307Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075343736.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://winter60.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Windows 下安装解压版mysql 及环境配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" class="article-date">
+  <time datetime="2020-09-05T08:38:20.125Z" itemprop="datePublished">2020-09-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文将介绍如何在windows下安装配置mysql</p>
+</blockquote>
+<ol>
+<li>下载安装包</li>
+<li>配置ini文件并初始化</li>
+<li>创建mysql服务，启动关闭服务</li>
+<li>设置密码</li>
+<li>创建数据库</li>
+</ol>
+<h1 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h1><p>去官网下载社区版的版本，<a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/mysql/">https://dev.mysql.com/downloads/mysql/</a></p>
+<p>我这里使用的是5.7版本， 5.8有一些新的特性和用法，根据需要进行安装。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075343736.png" alt="image-20200905075343736"></p>
+<p>选择对应的版本</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075518656.png" alt="image-20200905075518656"></p>
+<p>下载到本地解压。</p>
+<h1 id="配置ini文件并初始化"><a href="#配置ini文件并初始化" class="headerlink" title="配置ini文件并初始化"></a>配置ini文件并初始化</h1><p>解压后在目录下新建my.ini文件，内容如下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905080426957.png" alt="image-20200905080426957"></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysql]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">3306</span> </span><br><span class="line"><span class="attr">basedir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\</span><br><span class="line"><span class="attr">datadir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\data </span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">200</span> </span><br><span class="line"><span class="attr">character-set-server</span>=utf8 </span><br><span class="line"><span class="attr">default-storage-engine</span>=INNODB</span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span>=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>basedir 和datadir 配置成自己对应的目录</strong>，其中，需要在当前目录新建一个 名为data的空文件夹</p>
+<p>接下来以进入 bin目录，打开管理员命令行窗口， 输入命令<code>mysqld --initialize-insecure --user=mysql</code> 初始化，</p>
+<p>接着 <code>mysqld install</code> 命令安装服务，</p>
+<p>这样就可以 使用 <code>net start mysql</code> 和 <code>net stop mysql</code> 来启动和关闭mysql服务了。</p>
+<h1 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h1><p>在命令行窗口 使用<code>mysql -u root -p</code>就可以进入mysql了， 默认没有密码。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;<span class="built_in">set</span> password =password(<span class="string">&#x27;123&#x27;</span>);</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
+
+<p>下次打开的就需要输出密码了</p>
+<h1 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h1><p>在命令行输入 <code>show databases</code>可以看到当前用户有哪些数据库</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083117581.png" alt="image-20200905083117581"></p>
+<p>输入<code>create database 自己的库名 default charset=utf8mb4 </code>就可以创建 数据库了， 此时再<code>show databases</code>就可以看到多了一个数据库。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083900015.png" alt="image-20200905083900015"></p>
+<p>使用<code>use 库名</code> 就可以在当前 进行 表的增删查改了。</p>
+<p>另外，删除库的命令是<code>drop database 库名</code></p>
+<p>本文不对表相关查询 进行展开。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://winter60.github.io/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" data-id="ckepf1q780002o0lnb5ua4ijv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

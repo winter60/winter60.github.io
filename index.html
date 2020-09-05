@@ -64,38 +64,54 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-My-New-Post" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-python 操作excel" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/09/05/My-New-Post/" class="article-date">
-  <time datetime="2020-09-05T08:14:56.000Z" itemprop="datePublished">2020-09-05</time>
+    <a href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/" class="article-date">
+  <time datetime="2020-09-05T08:39:05.840Z" itemprop="datePublished">2020-09-05</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/09/05/My-New-Post/">My New Post</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>你好啊</p>
-<h1 id="测试第一篇博客"><a href="#测试第一篇博客" class="headerlink" title="测试第一篇博客"></a>测试第一篇博客</h1><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> registry https://registry.npm.taobao.org</span><br></pre></td></tr></table></figure>
+        <p>常见读写excel 的库有以下 几个(附案例)</p>
+<ol>
+<li><strong>xlwt</strong></li>
+<li><strong>xlrd</strong></li>
+<li><strong>xlutils</strong></li>
+<li><strong>openpyxl</strong></li>
+<li><strong>pandas</strong></li>
+</ol>
+<h1 id="xlwt"><a href="#xlwt" class="headerlink" title="xlwt"></a><a target="_blank" rel="noopener" href="https://xlwt.readthedocs.io/en/latest/api.html">xlwt</a></h1><p>主要用于对xls文件进行写入操作</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xlwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建workbook </span></span><br><span class="line">book = xlwt.Workbook()</span><br><span class="line"></span><br><span class="line"><span class="comment">#添加sheet页</span></span><br><span class="line">table = book.add_sheet(<span class="string">&#x27;Over&#x27;</span>, cell_overwrite_ok=<span class="literal">True</span>)</span><br><span class="line">sheet = book.add_sheet(<span class="string">&#x27;测试表&#x27;</span>)</span><br><span class="line">print(type(table))</span><br><span class="line">print(table)</span><br><span class="line"></span><br><span class="line">print(type(sheet))</span><br><span class="line">print(sheet)</span><br><span class="line"><span class="comment">#写入 b2单元格内容</span></span><br><span class="line">sheet.write(<span class="number">1</span>,<span class="number">1</span>, <span class="string">&#x27;你好啊&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置字体样式</span></span><br><span class="line">style = xlwt.XFStyle()</span><br><span class="line">font = xlwt.Font()</span><br><span class="line">font.name = <span class="string">&#x27;楷体&#x27;</span></span><br><span class="line">font.bold = <span class="literal">True</span></span><br><span class="line">style.font = font</span><br><span class="line"></span><br><span class="line">table.write(<span class="number">0</span>,<span class="number">0</span>, <span class="string">&#x27;世界吗？&#x27;</span>, style)</span><br><span class="line">book.save(filename_or_stream=<span class="string">&#x27;xlwt写入xls文件内容.xls&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 
+
+<h1 id="xlrd"><a href="#xlrd" class="headerlink" title="xlrd"></a><a target="_blank" rel="noopener" href="https://xlrd.readthedocs.io/en/latest/api.html">xlrd</a></h1><p>主要用于对xls文件进行读取</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> xlrd</span><br><span class="line"><span class="comment">#打开workbook</span></span><br><span class="line">data = xlrd.open_workbook(<span class="string">&#x27;xlwt写入xls文件内容.xls&#x27;</span>)</span><br><span class="line"><span class="comment">#所有sheet页 名称</span></span><br><span class="line">print(data.sheet_names())</span><br><span class="line">table0 = data.sheets()[<span class="number">0</span>]</span><br><span class="line">table = data.sheet_by_index(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取sheet页</span></span><br><span class="line">table = data.sheet_by_name(<span class="string">&#x27;Over&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 已有内容的行数和列数</span></span><br><span class="line">nrows = table.nrows</span><br><span class="line">ncolumns = table.ncols</span><br><span class="line">print(type(nrows), nrows)</span><br><span class="line">print(type(ncolumns), ncolumns)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取单元格内容的几种方式</span></span><br><span class="line">print(table.row_values(<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> range(nrows):</span><br><span class="line">    print(table.row_values(row))</span><br><span class="line"></span><br><span class="line">print(table.cell(<span class="number">0</span>,<span class="number">0</span>).value)</span><br><span class="line">print(table.row(<span class="number">0</span>)[<span class="number">0</span>].value)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="xlutils"><a href="#xlutils" class="headerlink" title="xlutils"></a><a target="_blank" rel="noopener" href="https://xlutils.readthedocs.io/en/latest/">xlutils</a></h1><p>对xlrd 和 xlwt进行了封装 ， 在使用前会先下载这两个模块的依赖</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xlwt,xlrd</span><br><span class="line"><span class="keyword">from</span> xlutils.copy <span class="keyword">import</span> copy</span><br><span class="line"></span><br><span class="line">data = xlrd.open_workbook(<span class="string">&#x27;xlwt写入xls文件内容.xls&#x27;</span>, formatting_info=<span class="literal">True</span>)</span><br><span class="line">excel = copy(wb=data)<span class="comment">#将xlrd对象拷贝转化为xlwt对象</span></span><br><span class="line">excel.save(<span class="string">&#x27;拷贝文件.xls&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="openpyxl"><a href="#openpyxl" class="headerlink" title="openpyxl"></a><a target="_blank" rel="noopener" href="https://openpyxl.readthedocs.io/en/stable/api/openpyxl.html">openpyxl</a></h1><p>不仅对xls可读写，也可对xlsx 进行处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> openpyxl</span><br><span class="line"><span class="comment"># 创建workbook</span></span><br><span class="line">data = openpyxl.Workbook()</span><br><span class="line"><span class="comment"># 添加sheet页</span></span><br><span class="line">data.create_sheet(<span class="string">&#x27;first&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取激活页(默认第一页)</span></span><br><span class="line">table = data.active</span><br><span class="line"><span class="comment">#写入单元格内容</span></span><br><span class="line">table.cell(<span class="number">1</span>,<span class="number">1</span>, <span class="string">&#x27;值&#x27;</span>)</span><br><span class="line"><span class="comment"># 保存文件</span></span><br><span class="line">data.save(<span class="string">&#x27;openpyxl写文件.xlsx&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打开文件 获取workbook</span></span><br><span class="line">data = openpyxl.load_workbook(<span class="string">&#x27;openpyxl写文件.xlsx&#x27;</span>)</span><br><span class="line"><span class="comment"># 获取sheet页</span></span><br><span class="line">table = data.get_sheet_by_name(<span class="string">&#x27;Sheet&#x27;</span>)</span><br><span class="line">nrows = table.rows</span><br><span class="line">ncols = table.columns</span><br><span class="line"></span><br><span class="line">print(type(nrows))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> nrows:</span><br><span class="line">    print(row)</span><br><span class="line">    line = [col.value <span class="keyword">for</span> col <span class="keyword">in</span> row]</span><br><span class="line">    print(line)</span><br><span class="line"></span><br><span class="line">print(table.cell(<span class="number">1</span>,<span class="number">1</span>).value)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="pandas"><a href="#pandas" class="headerlink" title="pandas"></a><a target="_blank" rel="noopener" href="https://www.pypandas.cn/docs/reference.html">pandas</a></h1><p>pandas 主要用于数据分析 ，在 对excel 操作方面也是非常方便</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成数据</span></span><br><span class="line">df = pd.DataFrame(np.random.randn(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写入 excel</span></span><br><span class="line">df.to_excel(<span class="string">&#x27;foo.xlsx&#x27;</span>, sheet_name=<span class="string">&#x27;Sheet1&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取excel</span></span><br><span class="line">df2 = pd.read_excel(<span class="string">&#x27;foo.xlsx&#x27;</span>, <span class="string">&#x27;Sheet1&#x27;</span>, index_col=<span class="literal">None</span>, na_values=[<span class="string">&#x27;NA&#x27;</span>])</span><br><span class="line">print(df2)</span><br></pre></td></tr></table></figure>
 
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://winter60.github.io/2020/09/05/My-New-Post/" data-id="ckepeaiju0000v4ln30dg4uhe" class="article-share-link">Share</a>
+      <a data-url="https://winter60.github.io/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/" data-id="ckepf1q750001o0ln6sll7clo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -105,46 +121,241 @@
 
 
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-python 爬虫（二）- 解析库 的简单使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/09/05/hello-world/" class="article-date">
-  <time datetime="2020-09-05T07:50:29.879Z" itemprop="datePublished">2020-09-05</time>
+    <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time datetime="2020-09-05T08:39:05.768Z" itemprop="datePublished">2020-09-05</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/09/05/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+        <p>当我们在获取到网页相应内容的时候， 就会使用去解析它 过滤得到想要的内容</p>
+<ol>
+<li><p>正则re</p>
+</li>
+<li><p>lxml 库</p>
+</li>
+<li><p>Beautiful Soup</p>
+</li>
+<li><p>pyquery</p>
+</li>
+<li><p>JsonPath </p>
+</li>
+</ol>
+<h1 id="示例响应内容"><a href="#示例响应内容" class="headerlink" title="示例响应内容"></a>示例响应内容</h1><p><a target="_blank" rel="noopener" href="http://quotes.toscrape.com/">http://quotes.toscrape.com/</a> 截取部分内容， 以下所有例子将以这个响应内容来示范， 假设响应的内容字符串 定义为一个变量 content</p>
+<h1 id="一、正则re"><a href="#一、正则re" class="headerlink" title="一、正则re"></a>一、正则re</h1><p>使用python 中内置的模块 re正则模块</p>
+<p>如解析页面 上所有的名人的名字：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line">pat = re.compile(<span class="string">&#x27;&lt;small class=&quot;author&quot; itemprop=&quot;author&quot;&gt;(.*?)&lt;/small&gt;&#x27;</span>)</span><br><span class="line">print(pat.findall(content))</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>输出：[‘Albert Einstein’, ‘J.K. Rowling’, ‘Albert Einstein’, ‘Jane Austen’, ‘Marilyn Monroe’, ‘Albert Einstein’, ‘André Gide’, ‘Thomas A. Edison’, ‘Eleanor Roosevelt’, ‘Steve Martin’]</p>
+<h1 id="二、lxml库"><a href="#二、lxml库" class="headerlink" title="二、lxml库"></a>二、lxml库</h1><p>lxml 支持xpath 的解析方式，那什么是xpath解析呢？</p>
+<blockquote>
+<blockquote>
+<p>XPath 使用路径表达式来选取 XML 文档中的节点或节点集。节点是通过沿着路径 (path) 或者步 (steps) 来选取的。 <a href="%5Bhttps://www.runoob.com/xpath/xpath-syntax.html%5D(https://www.runoob.com/xpath/xpath-syntax.html)">xpath 解析方式</a></p>
+</blockquote>
+</blockquote>
+<p>同样使用上面的例子，首先需要安装 lxml库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"></span><br><span class="line">html = etree.HTML(content)</span><br><span class="line">authors = html.xpath(<span class="string">&quot;//small[@class=&#x27;author&#x27;]//text()&quot;</span>)</span><br><span class="line">print(authors)</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h1 id="三、Beautiful-Soup"><a href="#三、Beautiful-Soup" class="headerlink" title="三、Beautiful Soup"></a>三、Beautiful Soup</h1><blockquote>
+<blockquote>
+<p>BeautifulSoup也是Python的一个HTML或XML解析库，最主要的功能就是从网页爬取我们需要的数据。</p>
+</blockquote>
+</blockquote>
+<p>首先需要安装   BeautifulSoup 解析器 <code>pip install beautifulsoup4</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">soup = BeautifulSoup(content,<span class="string">&quot;lxml&quot;</span>)</span><br><span class="line">authors = soup.select(<span class="string">&#x27;small.author&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> author <span class="keyword">in</span> authors:</span><br><span class="line">    print(author.get_text())</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、pyquery"><a href="#四、pyquery" class="headerlink" title="四、pyquery"></a>四、pyquery</h1><p>pyquery语法与前端 jQuery的用法几乎一样</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyquery <span class="keyword">import</span> PyQuery <span class="keyword">as</span> pq</span><br><span class="line"></span><br><span class="line">doc = pq(content)</span><br><span class="line">authors = doc(<span class="string">&#x27;small.author&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> author <span class="keyword">in</span> authors.items():</span><br><span class="line">    print(author.text())</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、JsonPath"><a href="#五、JsonPath" class="headerlink" title="五、JsonPath"></a>五、<a target="_blank" rel="noopener" href="https://goessner.net/articles/JsonPath/">JsonPath</a></h1><p>会使用jsonpath的地方 ， 一般响应的内容  是json数据 。</p>
+<p>语法：</p>
+<table>
+<thead>
+<tr>
+<th><strong>XPath</strong></th>
+<th><strong>JSONPath</strong></th>
+<th><strong>Result</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/store/book/author</code></td>
+<td><code>$.store.book[*].author</code></td>
+<td>the authors of all books in the store</td>
+</tr>
+<tr>
+<td><code>//author</code></td>
+<td><code>$..author</code></td>
+<td>all authors</td>
+</tr>
+<tr>
+<td><code>/store/*</code></td>
+<td><code>$.store.*</code></td>
+<td>all things in store, which are some books and a red bicycle.</td>
+</tr>
+<tr>
+<td><code>/store//price</code></td>
+<td><code>$.store..price</code></td>
+<td>the price of everything in the store.</td>
+</tr>
+<tr>
+<td><code>//book[3]</code></td>
+<td><code>$..book[2]</code></td>
+<td>the third book</td>
+</tr>
+<tr>
+<td><code>//book[last()]</code></td>
+<td><code>$..book[(@.length-1)]</code> <code>$..book[-1:]</code></td>
+<td>the last book in order.</td>
+</tr>
+<tr>
+<td><code>//book[position()&lt;3]</code></td>
+<td><code>$..book[0,1]</code> <code>$..book[:2]</code></td>
+<td>the first two books</td>
+</tr>
+<tr>
+<td><code>//book[isbn]</code></td>
+<td><code>$..book[?(@.isbn)]</code></td>
+<td>filter all books with isbn number</td>
+</tr>
+<tr>
+<td><code>//book[price&lt;10]</code></td>
+<td><code>$..book[?(@.price&lt;10)]</code></td>
+<td>filter all books cheapier than 10</td>
+</tr>
+<tr>
+<td><code>//*</code></td>
+<td><code>$..*</code></td>
+<td>all Elements in XML document. All members of JSON structure.</td>
+</tr>
+</tbody></table>
+<p>这里使用  一段 json 数据</p>
+<p>我们来获取 所有的作者 和 所有价格</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jsonpath</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">json_str = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&#123; &quot;store&quot;: &#123;</span></span><br><span class="line"><span class="string">    &quot;book&quot;: [ </span></span><br><span class="line"><span class="string">      &#123; &quot;category&quot;: &quot;reference&quot;,</span></span><br><span class="line"><span class="string">        &quot;author&quot;: &quot;Nigel Rees&quot;,</span></span><br><span class="line"><span class="string">        &quot;title&quot;: &quot;Sayings of the Century&quot;,</span></span><br><span class="line"><span class="string">        &quot;price&quot;: 8.95</span></span><br><span class="line"><span class="string">      &#125;,</span></span><br><span class="line"><span class="string">      &#123; &quot;category&quot;: &quot;fiction&quot;,</span></span><br><span class="line"><span class="string">        &quot;author&quot;: &quot;Evelyn Waugh&quot;,</span></span><br><span class="line"><span class="string">        &quot;title&quot;: &quot;Sword of Honour&quot;,</span></span><br><span class="line"><span class="string">        &quot;price&quot;: 12.99</span></span><br><span class="line"><span class="string">      &#125;,</span></span><br><span class="line"><span class="string">      &#123; &quot;category&quot;: &quot;fiction&quot;,</span></span><br><span class="line"><span class="string">        &quot;author&quot;: &quot;Herman Melville&quot;,</span></span><br><span class="line"><span class="string">        &quot;title&quot;: &quot;Moby Dick&quot;,</span></span><br><span class="line"><span class="string">        &quot;isbn&quot;: &quot;0-553-21311-3&quot;,</span></span><br><span class="line"><span class="string">        &quot;price&quot;: 8.99</span></span><br><span class="line"><span class="string">      &#125;,</span></span><br><span class="line"><span class="string">      &#123; &quot;category&quot;: &quot;fiction&quot;,</span></span><br><span class="line"><span class="string">        &quot;author&quot;: &quot;J. R. R. Tolkien&quot;,</span></span><br><span class="line"><span class="string">        &quot;title&quot;: &quot;The Lord of the Rings&quot;,</span></span><br><span class="line"><span class="string">        &quot;isbn&quot;: &quot;0-395-19395-8&quot;,</span></span><br><span class="line"><span class="string">        &quot;price&quot;: 22.99</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    ],</span></span><br><span class="line"><span class="string">    &quot;bicycle&quot;: &#123;</span></span><br><span class="line"><span class="string">      &quot;color&quot;: &quot;red&quot;,</span></span><br><span class="line"><span class="string">      &quot;price&quot;: 19.95</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">jc = json.loads(json_str)</span><br><span class="line"></span><br><span class="line">jp = jsonpath.jsonpath(jc, <span class="string">&#x27;$..author&#x27;</span>)</span><br><span class="line">print(jp)</span><br><span class="line">jp = jsonpath.jsonpath(jc, <span class="string">&#x27;$.store..price&#x27;</span>)</span><br><span class="line">print(jp)</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<p>[‘Nigel Rees’, ‘Evelyn Waugh’, ‘Herman Melville’, ‘J. R. R. Tolkien’]</p>
+<p>[8.95, 12.99, 8.99, 22.99, 19.95]</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://winter60.github.io/2020/09/05/hello-world/" data-id="ckepdgcbt0000vslndjyg5z62" class="article-share-link">Share</a>
+      <a data-url="https://winter60.github.io/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" data-id="ckepf1q7a0003o0lneelabava" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Windows 下安装解压版mysql 及环境配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" class="article-date">
+  <time datetime="2020-09-05T08:38:20.125Z" itemprop="datePublished">2020-09-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文将介绍如何在windows下安装配置mysql</p>
+</blockquote>
+<ol>
+<li>下载安装包</li>
+<li>配置ini文件并初始化</li>
+<li>创建mysql服务，启动关闭服务</li>
+<li>设置密码</li>
+<li>创建数据库</li>
+</ol>
+<h1 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h1><p>去官网下载社区版的版本，<a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/mysql/">https://dev.mysql.com/downloads/mysql/</a></p>
+<p>我这里使用的是5.7版本， 5.8有一些新的特性和用法，根据需要进行安装。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075343736.png" alt="image-20200905075343736"></p>
+<p>选择对应的版本</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905075518656.png" alt="image-20200905075518656"></p>
+<p>下载到本地解压。</p>
+<h1 id="配置ini文件并初始化"><a href="#配置ini文件并初始化" class="headerlink" title="配置ini文件并初始化"></a>配置ini文件并初始化</h1><p>解压后在目录下新建my.ini文件，内容如下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905080426957.png" alt="image-20200905080426957"></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysql]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">3306</span> </span><br><span class="line"><span class="attr">basedir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\</span><br><span class="line"><span class="attr">datadir</span>=d:\TD\mysql-<span class="number">5.7</span>.<span class="number">28</span>-winx64\data </span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">200</span> </span><br><span class="line"><span class="attr">character-set-server</span>=utf8 </span><br><span class="line"><span class="attr">default-storage-engine</span>=INNODB</span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span>=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>basedir 和datadir 配置成自己对应的目录</strong>，其中，需要在当前目录新建一个 名为data的空文件夹</p>
+<p>接下来以进入 bin目录，打开管理员命令行窗口， 输入命令<code>mysqld --initialize-insecure --user=mysql</code> 初始化，</p>
+<p>接着 <code>mysqld install</code> 命令安装服务，</p>
+<p>这样就可以 使用 <code>net start mysql</code> 和 <code>net stop mysql</code> 来启动和关闭mysql服务了。</p>
+<h1 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h1><p>在命令行窗口 使用<code>mysql -u root -p</code>就可以进入mysql了， 默认没有密码。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;<span class="built_in">set</span> password =password(<span class="string">&#x27;123&#x27;</span>);</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
+
+<p>下次打开的就需要输出密码了</p>
+<h1 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h1><p>在命令行输入 <code>show databases</code>可以看到当前用户有哪些数据库</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083117581.png" alt="image-20200905083117581"></p>
+<p>输入<code>create database 自己的库名 default charset=utf8mb4 </code>就可以创建 数据库了， 此时再<code>show databases</code>就可以看到多了一个数据库。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200905083900015.png" alt="image-20200905083900015"></p>
+<p>使用<code>use 库名</code> 就可以在当前 进行 表的增删查改了。</p>
+<p>另外，删除库的命令是<code>drop database 库名</code></p>
+<p>本文不对表相关查询 进行展开。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://winter60.github.io/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" data-id="ckepf1q780002o0lnb5ua4ijv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Mysql 查询分组 查询top n" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/" class="article-date">
+  <time datetime="2020-09-05T08:38:20.044Z" itemprop="datePublished">2020-09-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id=""><a href="#" class="headerlink" title=""></a></h1><h1 id="情况说明"><a href="#情况说明" class="headerlink" title="情况说明"></a>情况说明</h1><p>查询每门科目的前3名。</p>
+<p>对于查询的结果，一般有两种情况。</p>
+<p>表所有数据为：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/20200830204926.png" alt="image-20200830171608567"></p>
+<p>情况1：对于分数相同的人，其后面的人 紧跟着名次排，直到排够名次3，就不再往后取了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200830170431328.png" alt="image-20200830170431328"></p>
+<p>情况2：对于分数相同的人，若当前相同名次的人数大于或等于 3， 则相同分数其后面的人不再参于top3了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/winter60/my_figurebed/data/image-20200830170939339.png" alt="image-20200830170939339"></p>
+<p><strong>在情况2中 ，为什么”李四 - java“ 这行没有了呢？</strong></p>
+<p>可以这样理解，在情况2中相当于使用了<strong>名次空缺</strong>， 分数相同的人其后面那个人，的名次为 <strong>前面的人数+1</strong> ， 这里的 ”李四-java“这行，他的名次应当是 <strong>5</strong> ， 所有top3自然取不到  ”李四-java“这行。</p>
+<h1 id="查询方法"><a href="#查询方法" class="headerlink" title="# 查询方法"></a># 查询方法</h1><h2 id="情况1方法："><a href="#情况1方法：" class="headerlink" title="情况1方法："></a>情况1方法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"># 方法1</span><br><span class="line">SELECT 		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">WHERE		(SELECT COUNT(distinct score) FROM score_t WHERE T1.subject &#x3D; subject AND T1.score &lt; score) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line">-- 思路：</span><br><span class="line">-- 1. 通过子查询的方式 ， 查询每条记录中 对应科目比他分数高的 </span><br><span class="line">-- 2. 如果比自己还高的 小于3 ，那么自己就是属于top3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法2</span><br><span class="line"> SELECT		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">LEFT JOIN	(SELECT DISTINCT subject, score FROM score_t) T2</span><br><span class="line">ON 			T1.subject &#x3D; T2.subject</span><br><span class="line">AND 		T1.score &lt; T2.score</span><br><span class="line">GROUP BY 	name,subject,score</span><br><span class="line">HAVING		COUNT(1) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line"></span><br><span class="line">-- 思路：</span><br><span class="line">-- 1. 找到所有科目对应分数的所有情况 （去重）</span><br><span class="line">-- 2. 和原表关联后， 且比当前 记录 对应科目比自己分数</span><br><span class="line">-- 3. 分组后 找出 次数小于3的</span><br><span class="line">-- 注意： 使用 distinct 去重 和不使用， 区别于并列名次 是否算同一个名额</span><br><span class="line"></span><br><span class="line"># 方法3</span><br><span class="line">select t.name,t.subject,t.score,t.rank from (</span><br><span class="line">	select name,subject,score,</span><br><span class="line">	@r:&#x3D; if(@psub &#x3D; subject, if(@psco &#x3D; score, @r, @r + 1), 1) rank ,</span><br><span class="line">	@psub:&#x3D; subject , @psco:&#x3D; score </span><br><span class="line">	from score_t, (select @psub:&#x3D;null, @psco:&#x3D;null, @r:&#x3D;0) init</span><br><span class="line">	order by subject,score desc</span><br><span class="line">) t where t.rank &lt;&#x3D;3;</span><br><span class="line">-- 思路：</span><br><span class="line">-- 使用 临时变量， 相同的分数 保持名次不变，否则+1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法4</span><br><span class="line">select t1.name,t1.subject,t1.score, count(distinct t2.score)  rank from score_t t1 -- </span><br><span class="line">left join score_t t2</span><br><span class="line">on t1.subject &#x3D; t2.subject and t2.score &gt;&#x3D; t1.score</span><br><span class="line">group by t1.subject,t1.name,t1.score</span><br><span class="line">having count(distinct t2.score) &lt;&#x3D; 3</span><br><span class="line">order by subject,score desc ,rank;</span><br><span class="line">-- 和方法2思路一样 ， 只是使用 写法不同</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="情况2方法："><a href="#情况2方法：" class="headerlink" title="情况2方法："></a>情况2方法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"># 方法1：  </span><br><span class="line">SELECT 		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">WHERE		(SELECT COUNT(1) FROM score_t WHERE T1.subject &#x3D; subject AND T1.score &lt; score) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"># 方法2    </span><br><span class="line"> SELECT		T1.*</span><br><span class="line">FROM 		score_t T1</span><br><span class="line">LEFT JOIN	(SELECT subject, score FROM score_t) T2</span><br><span class="line">ON 			T1.subject &#x3D; T2.subject</span><br><span class="line">AND 		T1.score &lt; T2.score</span><br><span class="line"></span><br><span class="line">GROUP BY 	name,subject,score</span><br><span class="line">HAVING		COUNT(1) &lt; 3</span><br><span class="line">ORDER BY 	subject,score DESC</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法3</span><br><span class="line">select t.name,t.subject,t.score,t.rank from (</span><br><span class="line">	select name,subject,score,</span><br><span class="line">	@allorder:&#x3D; if(@psub &#x3D; subject, @allorder + 1, 1),</span><br><span class="line">	@r:&#x3D; if(@psub &#x3D; subject, if(@psco &#x3D; score, @r, @allorder), 1) rank ,	</span><br><span class="line">	@psub:&#x3D; subject , @psco:&#x3D; score</span><br><span class="line">	from score_t, (select @psub:&#x3D;null, @psco:&#x3D;null, @r:&#x3D;0, @allorder:&#x3D;0) init</span><br><span class="line">	order by subject,score desc</span><br><span class="line">) t where t.rank &lt;&#x3D;3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 方法4</span><br><span class="line">select t1.name,t1.subject,t1.score  from score_t t1 -- </span><br><span class="line">left join score_t t2</span><br><span class="line">on t1.subject &#x3D; t2.subject and t2.score &gt; t1.score</span><br><span class="line">group by t1.subject,t1.name,t1.score</span><br><span class="line">having count(*) &lt;  3</span><br><span class="line">order by subject,score desc </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>情况2和情况 写法都是对应的， 需要注意的是 并列名次，后面的人 是否需要保持名次空缺。那么统计的时候就需要根据情况去重。</p>
+<h1 id="数据创建"><a href="#数据创建" class="headerlink" title="数据创建"></a>数据创建</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE score_t(</span><br><span class="line">name 		VARCHAR(10),</span><br><span class="line">subject		VARCHAR(10),</span><br><span class="line">score		INT(10)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO score_t VALUES</span><br><span class="line">(&quot;张三&quot;,&quot;java&quot;,71),</span><br><span class="line">(&quot;李四&quot;,&quot;java&quot;,82),</span><br><span class="line">(&quot;王五&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;赵六&quot;,&quot;java&quot;,98),</span><br><span class="line">(&quot;孙七&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;陈八&quot;,&quot;java&quot;,90),</span><br><span class="line">(&quot;张三&quot;,&quot;python&quot;,81),</span><br><span class="line">(&quot;李四&quot;,&quot;python&quot;,92),</span><br><span class="line">(&quot;王五&quot;,&quot;python&quot;,93),</span><br><span class="line">(&quot;赵六&quot;,&quot;python&quot;,97),</span><br><span class="line">(&quot;刘九&quot;,&quot;python&quot;,93),</span><br><span class="line">(&quot;孙七&quot;,&quot;python&quot;,70);</span><br></pre></td></tr></table></figure>
+
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44497013/article/details/107317719">https://blog.csdn.net/weixin_44497013/article/details/107317719</a></p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/department-top-three-salaries/solution/mysqlzi-ding-yi-bian-liang-shi-xian-fen-lei-pai-xu/">https://leetcode-cn.com/problems/department-top-three-salaries/solution/mysqlzi-ding-yi-bian-liang-shi-xian-fen-lei-pai-xu/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://winter60.github.io/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/" data-id="ckepf1q6r0000o0ln23n99meq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -185,11 +396,19 @@
       <ul>
         
           <li>
-            <a href="/2020/09/05/My-New-Post/">My New Post</a>
+            <a href="/2020/09/05/python%20%E6%93%8D%E4%BD%9Cexcel/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/09/05/hello-world/">Hello World</a>
+            <a href="/2020/09/05/python%20%E7%88%AC%E8%99%AB%EF%BC%88%E4%BA%8C%EF%BC%89-%20%E8%A7%A3%E6%9E%90%E5%BA%93%20%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/Windows%20%E4%B8%8B%E5%AE%89%E8%A3%85%E8%A7%A3%E5%8E%8B%E7%89%88mysql%20%E5%8F%8A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/05/Mysql%20%E6%9F%A5%E8%AF%A2%E5%88%86%E7%BB%84%20%E6%9F%A5%E8%AF%A2top%20n/">(no title)</a>
           </li>
         
       </ul>
